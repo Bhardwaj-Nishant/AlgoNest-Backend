@@ -11,7 +11,7 @@ public class ScraperClient {
 
     private final WebClient webClient;
 
-    public ScraperClient(@Value("${scraper.service.url:http://localhost:8001}") String baseUrl) {
+    public ScraperClient(@Value("${scraper.service.url}") String baseUrl) {
         this.webClient = WebClient.builder()
                 .baseUrl(baseUrl)
                 .build();
