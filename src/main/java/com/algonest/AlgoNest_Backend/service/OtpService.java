@@ -2,11 +2,9 @@ package com.algonest.AlgoNest_Backend.service;
 
 import com.algonest.AlgoNest_Backend.entity.OtpVerification;
 import com.algonest.AlgoNest_Backend.repository.OtpRepository;
-import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -14,30 +12,25 @@ import java.util.Random;
 public class OtpService {
 
     private final OtpRepository otpRepository;
-    private final EmailService emailService;
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private final SendGridEmailService emailService;   // ✅ Use the new SendGrid service
 
-    public OtpService(OtpRepository otpRepository, EmailService emailService) {
+    public OtpService(OtpRepository otpRepository, SendGridEmailService emailService) {
         this.otpRepository = otpRepository;
         this.emailService = emailService;
     }
 
-
     @Transactional
-    public String generateAndSendOtp(String email) throws MessagingException {
-
+    public String generateAndSendOtp(String email, String type) {
         otpRepository.deleteByEmail(email);
-
-        String otp = String.format("%06d", RANDOM.nextInt(1_000_000));
-
+        String otp = String.format("%06d", new Random().nextInt(999999));
         OtpVerification entity = new OtpVerification();
         entity.setEmail(email);
         entity.setOtp(otp);
         entity.setExpiry(LocalDateTime.now().plusMinutes(5));
-
         otpRepository.save(entity);
 
-        emailService.sendOtp(email, otp);
+        // ✅ Pass the type (e.g., "signup" or "reset")
+        emailService.sendOtp(email, otp, type);
 
         return otp;
     }

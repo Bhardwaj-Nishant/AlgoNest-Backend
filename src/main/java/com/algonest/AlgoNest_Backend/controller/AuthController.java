@@ -3,10 +3,9 @@ package com.algonest.AlgoNest_Backend.controller;
 import com.algonest.AlgoNest_Backend.dto.*;
 import com.algonest.AlgoNest_Backend.service.AuthService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 import java.util.Map;
 
@@ -20,96 +19,44 @@ public class AuthController {
         this.authService = authService;
     }
 
-    /*
-     * ==========================
-     * SIGNUP
-     * ==========================
-     */
-
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signup(
-            @RequestBody SignupRequest request
+            @Valid @RequestBody SignupRequest request
     ) throws MessagingException {
-
-        return ResponseEntity.ok(
-                authService.signup(request)
-        );
+        return ResponseEntity.ok(authService.signup(request));
     }
-
-    /*
-     * ==========================
-     * VERIFY SIGNUP OTP
-     * ==========================
-     */
 
     @PostMapping("/verify-otp")
     public ResponseEntity<Map<String, String>> verifyOtp(
-            @RequestBody VerifyOtpRequest request
+            @Valid @RequestBody VerifyOtpRequest request
     ) {
-
         return ResponseEntity.ok(
-                authService.verifySignupOtp(
-                        request.getEmail(),
-                        request.getOtp()
-                )
+                authService.verifySignupOtp(request.getEmail(), request.getOtp())
         );
     }
-
-    /*
-     * ==========================
-     * FORGOT PASSWORD
-     * ==========================
-     */
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(
-            @Valid
-            @RequestBody ForgotPasswordRequest request
+            @Valid @RequestBody ForgotPasswordRequest request
     ) throws MessagingException {
-
-        return ResponseEntity.ok(
-                authService.forgotPassword(request.getEmail())
-        );
+        return ResponseEntity.ok(authService.forgotPassword(request.getEmail()));
     }
-
-    /*
-     * ==========================
-     * VERIFY RESET OTP
-     * ==========================
-     */
 
     @PostMapping("/verify-reset-otp")
     public ResponseEntity<Map<String, String>> verifyResetOtp(
-            @Valid
-            @RequestBody VerifyResetOtpRequest request
+            @Valid @RequestBody VerifyResetOtpRequest request
     ) {
-
         return ResponseEntity.ok(
-                authService.verifyResetOtp(
-                        request.getEmail(),
-                        request.getOtp()
-                )
+                authService.verifyResetOtp(request.getEmail(), request.getOtp())
         );
     }
-
-    /*
-     * ==========================
-     * RESET PASSWORD
-     * ==========================
-     */
 
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(
-            @Valid
-            @RequestBody ResetPasswordRequest request
+            @Valid @RequestBody ResetPasswordRequest request
     ) {
-
         return ResponseEntity.ok(
-                authService.resetPassword(
-                        request.getEmail(),
-                        request.getNewPassword()
-                )
+                authService.resetPassword(request.getEmail(), request.getNewPassword())
         );
     }
-
 }
